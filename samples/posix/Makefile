@@ -26,7 +26,7 @@ SRCDIR = $(DRIVER)/src
 
 COMPILE = gcc -iquote$(INCDIR) -g -MMD -MP -Wall $(DEFINE)
 
-EXE = atinter install_ebl zcltime \
+EXE = atinter atremote install_ebl zcltime \
 		commissioning_client commissioning_server ipv4_client sms_client \
 		transparent_client zigbee_walker apply_profile xbee_term eblinfo \
 		network_scan gpm
@@ -48,6 +48,7 @@ clean :
 
 SRCS = \
 		atinter.c \
+		atremote.c \
 		eblinfo.c \
 		install_ebl.c \
 		ipv4_client.c \
@@ -56,7 +57,9 @@ SRCS = \
 		xbee_term.c _xbee_term.c xbee_term_posix.c \
 		zcltime.c \
 		parse_serial_args.c \
-	_atinter.c _pxbee_ota_update.c \
+	_atinter.c \
+	_atremote.c \
+	_pxbee_ota_update.c \
 	_commission_client.c \
 	_commission_server.c _nodetable.c _zigbee_walker.c \
 	xbee_platform_posix.c \
@@ -107,7 +110,12 @@ zigbee_OBJECTS = $(wpan_OBJECTS) zigbee_zcl.o zigbee_zdo.o zcl_types.o
 
 atinter_OBJECTS = xbee_readline.o _atinter.o
 
+atremote_OBJECTS = xbee_readline.o _atremote.o
+
 atinter : $(xbee_OBJECTS) $(atinter_OBJECTS) atinter.o
+	$(COMPILE) -o $@ $^
+
+atremote : $(xbee_OBJECTS) $(atremote_OBJECTS) atremote.o
 	$(COMPILE) -o $@ $^
 
 gpm : $(zigbee_OBJECTS) $(atinter_OBJECTS) xbee_gpm.o gpm.o
